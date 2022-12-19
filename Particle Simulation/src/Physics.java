@@ -33,9 +33,16 @@ public class Physics {
     }
 
     public static double[] calculateBounce(Particle particle, Wall wall) {
-        double[] rotated = rotateAroundPoint(particle.vx, particle.vy, 0, 0, wall.rotation);
-        rotated[0] = -rotated[0];
-        rotated = rotateAroundPoint(rotated[0], rotated[1], 0, 0, -wall.rotation);
-        return rotated;
+        double beforeX = particle.x - particle.vx;
+        double beforeY = particle.y - particle.vy;
+
+        double[] rotatedV = rotateAroundPoint(particle.vx, particle.vy, 0, 0, -wall.rotation);
+
+        double[] rotatedPos = rotateAroundPoint(beforeX, beforeY, wall.x, wall.y, -wall.rotation);
+        if (Math.abs(rotatedPos[1] - wall.y) < wall.height / 2) rotatedV[0] = -rotatedV[0];
+        else rotatedV[1] = -rotatedV[1];
+
+        rotatedV = rotateAroundPoint(rotatedV[0], rotatedV[1], 0, 0, wall.rotation);
+        return rotatedV;
     }
 }
